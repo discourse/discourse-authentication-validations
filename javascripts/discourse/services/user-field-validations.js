@@ -35,44 +35,26 @@ export default class UserFieldValidations extends Service {
 
   @action
   crossCheckValidations(userFieldValidationsMap, value) {
-    for (const property in userFieldValidationsMap) {
-      const userField = userFieldValidationsMap[property];
+    for (const userField of Object.values(userFieldValidationsMap)) {
+      const { showValues, hideValues, targetClasses } = userField;
 
-      // show values
-      if (
-        userField.showValues.length &&
-        userField.targetClasses.length &&
-        userField.showValues.includes(value)
-      ) {
-        const targets = document.querySelectorAll(
-          userField.targetClasses.map((className) => `.${className}`).join(", ")
-        );
-        targets.forEach((element) => (element.style.display = "block"));
-      }
+      const shouldShow = showValues?.includes?.(value) && targetClasses.length;
+      const shouldHide =
+        (hideValues?.includes?.(value) && targetClasses.length) ||
+        (showValues.length && !showValues.includes(value));
 
-      // hide values
-      if (
-        userField.hideValues.length &&
-        userField.targetClasses.length &&
-        userField.hideValues.includes(value)
-      ) {
-        const targets = document.querySelectorAll(
-          userField.targetClasses.map((className) => `.${className}`).join(", ")
-        );
-        targets.forEach((element) => (element.style.display = "none"));
-      } else if (
-        userField.showValues.length &&
-        !userField.showValues.includes(value)
-      ) {
-        const targets = document.querySelectorAll(
-          userField.targetClasses.map((className) => `.${className}`).join(", ")
-        );
-        targets.forEach((element) => (element.style.display = "none"));
+      if (shouldShow || shouldHide) {
+        this._updateTargets(targetClasses, shouldShow);
       }
     }
   }
-}
 
-// {id: 1, showValues: ["show", "foo"], hideValues: [""], targetClasses: ["field-class-1", "field-class-2"]}
-// {id: 2, showValues: [""], hideValues: [""], targetClasses: [""]}
-// {id: 2, showValues: [""], hideValues: [""], targetClasses: [""]}
+  _updateTargets(targetClasses, shouldShow) {
+    const targets = document.querySelectorAll(
+      targetClasses.map((className) => `.${className}`).join(", ")
+    );
+    targets.forEach((element) => {
+      element.style.display = shouldShow ? "block" : "none";
+    });
+  }
+}
