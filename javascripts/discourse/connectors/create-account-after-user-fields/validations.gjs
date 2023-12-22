@@ -12,11 +12,14 @@ export default class Validations extends Component {
     this.args.outletArgs.userFields[0].field.setProperties({
       hasCustomValidation: true,
       showValues: ["show1", "show2"],
-      hideValues: [""],
-      targetClasses: [
-        "user-field-high-school-graduation-year",
-        "user-field-high-school",
-      ],
+      hideValues: [],
+      targetClasses: ["user-field-test2"],
+    });
+    this.args.outletArgs.userFields[1].field.setProperties({
+      hasCustomValidation: true,
+      showValues: [],
+      hideValues: [],
+      targetClasses: [],
     });
 
     this.userFieldValidations.totalCustomValidationFields =
