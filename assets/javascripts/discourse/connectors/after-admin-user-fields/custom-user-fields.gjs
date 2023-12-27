@@ -22,6 +22,7 @@ export default class CustomUserFields extends Component {
       <Input
         @type="checkbox"
         @checked={{@outletArgs.buffered.has_custom_validation}}
+        class="has-custom-validation-checkbox"
       />
       <span>
         {{i18n "discourse_authentication_validations.has_custom_validation"}}
@@ -35,6 +36,7 @@ export default class CustomUserFields extends Component {
         <ValueList
           @values={{@outletArgs.buffered.show_values}}
           @inputType="array"
+          class="show-values-input"
         />
         <span>
           {{i18n
@@ -49,6 +51,7 @@ export default class CustomUserFields extends Component {
         <ValueList
           @values={{@outletArgs.buffered.target_classes}}
           @inputType="array"
+          class="target-classes-input"
         />
         <span>
           {{i18n

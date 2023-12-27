@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # name: discourse-authentication-validations
-# about: TODO
+# about: Add custom validations to a user field to toggle the display of user fields on the authentication form based on the value of said field
 # meta_topic_id: TODO
 # version: 0.0.1
 # authors: Discourse
@@ -18,9 +18,7 @@ require_relative "lib/discourse_authentication_validations/engine"
 
 after_initialize do
   add_to_serializer(:user_field, :has_custom_validation) { object.has_custom_validation }
-
   add_to_serializer(:user_field, :show_values) { object.show_values }
-
   add_to_serializer(:user_field, :target_classes) { object.target_classes }
 
   register_modifier(:admin_user_fields_columns) do |columns|
