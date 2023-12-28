@@ -3,7 +3,7 @@ en:
     admin:
       site_settings:
         categories:
-          TODO_plugin_name: "Plugin Name"
+          discourse_authentication_validations: "Discourse Authentication Validations"
   js:
     discourse_authentication_validations:
       has_custom_validation: "Include a custom validation"
