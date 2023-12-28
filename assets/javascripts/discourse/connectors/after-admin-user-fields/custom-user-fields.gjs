@@ -9,11 +9,9 @@ export default class CustomUserFields extends Component {
   constructor() {
     super(...arguments);
     withPluginApi("1.21.0", (api) => {
-      api.includeUserFieldPropertiesOnSave([
-        "has_custom_validation",
-        "show_values",
-        "target_classes",
-      ]);
+      ["has_custom_validation", "show_values", "target_classes"].forEach(
+        (property) => api.includeUserFieldPropertyOnSave(property)
+      );
     });
   }
 
