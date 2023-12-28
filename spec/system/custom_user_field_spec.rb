@@ -65,60 +65,21 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
     end
   end
 
-  context "when signing up" do
-    context "when completing the initial render of user fields" do
-      context "when user field has no custom validation" do
-        let(:target_class) { build_user_field_name_css_target(user_field_without_validation) }
+  context "when completing the initial render of user fields" do
+    context "when user field has no custom validation" do
+      let(:target_class) { build_user_field_name_css_target(user_field_without_validation) }
 
-        context "when rendering user field" do
-          include_examples "show target user field"
-        end
-      end
-
-      context "when user field has custom validation" do
-        context "when user field is included in target_classes" do
-          let(:target_class) { build_user_field_name_css_target(user_field_with_validation_1) }
-
-          context "when rendering user field" do
-            include_examples "hide target user field"
-          end
-        end
-
-        context "when user field is not included in target_classes" do
-          let(:target_class) { build_user_field_name_css_target(user_field_with_validation_2) }
-
-          context "when rendering user field" do
-            include_examples "show target user field"
-          end
-        end
+      context "when rendering user field" do
+        include_examples "show target user field"
       end
     end
 
-    context "when changing the value of user field with a custom validation" do
+    context "when user field has custom validation" do
       context "when user field is included in target_classes" do
         let(:target_class) { build_user_field_name_css_target(user_field_with_validation_1) }
-        let(:parent_of_target_class) do
-          build_user_field_name_css_target(user_field_with_validation_2)
-        end
 
-        context "when show_values are set on parent user field of target" do
-          context "when the input matches a show_values value" do
-            include_examples "show target user field" do
-              before { page.find(parent_of_target_class).fill_in(with: SHOW_VALIDATION_VALUE_1) }
-            end
-          end
-
-          context "when the input does not match a show_values value" do
-            include_examples "hide target user field" do
-              before { page.find(parent_of_target_class).fill_in(with: "not a show_values value") }
-            end
-          end
-        end
-
-        context "when show_values are not set on parent user field of target" do
-          include_examples "hide target user field" do
-            before { page.find(parent_of_target_class).fill_in(with: "foo bar") }
-          end
+        context "when rendering user field" do
+          include_examples "hide target user field"
         end
       end
 
@@ -128,6 +89,43 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
         context "when rendering user field" do
           include_examples "show target user field"
         end
+      end
+    end
+  end
+
+  context "when changing the value of user field with a custom validation" do
+    context "when user field is included in target_classes" do
+      let(:target_class) { build_user_field_name_css_target(user_field_with_validation_1) }
+      let(:parent_of_target_class) do
+        build_user_field_name_css_target(user_field_with_validation_2)
+      end
+
+      context "when show_values are set on parent user field of target" do
+        context "when the input matches a show_values value" do
+          include_examples "show target user field" do
+            before { page.find(parent_of_target_class).fill_in(with: SHOW_VALIDATION_VALUE_1) }
+          end
+        end
+
+        context "when the input does not match a show_values value" do
+          include_examples "hide target user field" do
+            before { page.find(parent_of_target_class).fill_in(with: "not a show_values value") }
+          end
+        end
+      end
+
+      context "when show_values are not set on parent user field of target" do
+        include_examples "hide target user field" do
+          before { page.find(parent_of_target_class).fill_in(with: "foo bar") }
+        end
+      end
+    end
+
+    context "when user field is not included in target_classes" do
+      let(:target_class) { build_user_field_name_css_target(user_field_with_validation_2) }
+
+      context "when rendering user field" do
+        include_examples "show target user field"
       end
     end
   end
