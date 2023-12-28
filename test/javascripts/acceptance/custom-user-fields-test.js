@@ -1,6 +1,5 @@
 import { click, visit } from "@ember/test-helpers";
 import { test } from "qunit";
-import pretender, { response } from "discourse/tests/helpers/create-pretender";
 import { acceptance } from "discourse/tests/helpers/qunit-helpers";
 
 acceptance(
