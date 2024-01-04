@@ -36,7 +36,7 @@ export default class UserFieldValidations extends Service {
         .replace(/\s+/g, "-")}`;
       const userFieldElement = document.querySelector(`.${className}`);
       if (userFieldElement) {
-        userFieldElement.style.display = shouldShow ? "block" : "none";
+        userFieldElement.style.display = shouldShow ? "" : "none";
       }
     });
   }

@@ -14,7 +14,6 @@ export default class CustomUserFields extends Component {
   @tracked userFieldsMinusCurrent = this.site.user_fields.filter(
     (userField) => userField.id !== this.args.outletArgs.buffered.content.id
   );
-  @tracked userFieldIds;
 
   constructor() {
     super(...arguments);
