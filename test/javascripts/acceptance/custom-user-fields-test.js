@@ -22,7 +22,7 @@ acceptance(
               position: 1,
               has_custom_validation: true,
               show_values: [],
-              target_classes: [],
+              target_user_field_ids: [],
             },
             {
               id: 2,
@@ -33,7 +33,7 @@ acceptance(
               position: 2,
               has_custom_validation: false,
               show_values: [],
-              target_classes: [],
+              target_user_field_ids: [],
             },
           ],
         })

@@ -15,7 +15,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
       required: false,
       has_custom_validation: false,
       show_values: [],
-      target_classes: [],
+      target_user_field_ids: [],
     )
   end
 
@@ -28,7 +28,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
       required: false,
       has_custom_validation: true,
       show_values: [],
-      target_classes: [],
+      target_user_field_ids: [],
     )
   end
 
@@ -41,12 +41,12 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
       required: false,
       has_custom_validation: true,
       show_values: [SHOW_VALIDATION_VALUE_1, SHOW_VALIDATION_VALUE_2],
-      target_classes: [build_user_field_name_css_target(user_field_with_validation_1, prefix: "")],
+      target_user_field_ids: [user_field_with_validation_1.id],
     )
   end
 
-  def build_user_field_name_css_target(user_field, prefix: ".")
-    "#{prefix}user-field-#{user_field.name}"
+  def build_user_field_css_target(user_field)
+    ".user-field-#{user_field.name}"
   end
 
   shared_examples "show target user field" do
@@ -67,7 +67,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
 
   context "when completing the initial render of user fields" do
     context "when user field has no custom validation" do
-      let(:target_class) { build_user_field_name_css_target(user_field_without_validation) }
+      let(:target_class) { build_user_field_css_target(user_field_without_validation) }
 
       context "when rendering user field" do
         include_examples "show target user field"
@@ -75,16 +75,16 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
     end
 
     context "when user field has custom validation" do
-      context "when user field is included in target_classes" do
-        let(:target_class) { build_user_field_name_css_target(user_field_with_validation_1) }
+      context "when user field is included in target_user_field_ids" do
+        let(:target_class) { build_user_field_css_target(user_field_with_validation_1) }
 
         context "when rendering user field" do
           include_examples "hide target user field"
         end
       end
 
-      context "when user field is not included in target_classes" do
-        let(:target_class) { build_user_field_name_css_target(user_field_with_validation_2) }
+      context "when user field is not included in target_user_field_ids" do
+        let(:target_class) { build_user_field_css_target(user_field_with_validation_2) }
 
         context "when rendering user field" do
           include_examples "show target user field"
@@ -94,10 +94,10 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
   end
 
   context "when changing the value of user field with a custom validation" do
-    context "when user field is included in target_classes" do
-      let(:target_class) { build_user_field_name_css_target(user_field_with_validation_1) }
+    context "when user field is included in target_user_field_ids" do
+      let(:target_class) { build_user_field_css_target(user_field_with_validation_1) }
       let(:parent_of_target_class) do
-        build_user_field_name_css_target(user_field_with_validation_2)
+        build_user_field_css_target(user_field_with_validation_2)
       end
 
       context "when show_values are set on parent user field of target" do
@@ -121,8 +121,8 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
       end
     end
 
-    context "when user field is not included in target_classes" do
-      let(:target_class) { build_user_field_name_css_target(user_field_with_validation_2) }
+    context "when user field is not included in target_user_field_ids" do
+      let(:target_class) { build_user_field_css_target(user_field_with_validation_2) }
 
       context "when rendering user field" do
         include_examples "show target user field"

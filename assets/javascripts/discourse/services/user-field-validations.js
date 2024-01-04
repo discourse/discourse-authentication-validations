@@ -1,10 +1,13 @@
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { next } from "@ember/runloop";
-import Service from "@ember/service";
+import Service, { inject as service } from "@ember/service";
 
 export default class UserFieldValidations extends Service {
+  @service site;
+
   @tracked totalCustomValidationFields = 0;
+  @tracked userFields;
   currentCustomValidationFieldCount = 0;
 
   @action
@@ -22,14 +25,18 @@ export default class UserFieldValidations extends Service {
   @action
   crossCheckValidations(userField, value) {
     const shouldShow = userField.show_values?.includes?.(value);
-    this._updateTargets(userField.target_classes, shouldShow);
+    this._updateTargets(userField.target_user_field_ids, shouldShow);
   }
 
-  _updateTargets(targetClasses, shouldShow) {
-    targetClasses.forEach((className) => {
-      const userField = document.querySelector(`.${className}`);
-      if (userField) {
-        userField.style.display = shouldShow ? "block" : "none";
+  _updateTargets(userFieldIds, shouldShow) {
+    userFieldIds.forEach((id) => {
+      const userField = this.site.user_fields.find((field) => field.id === id);
+      const className = `user-field-${userField.name
+        .toLowerCase()
+        .replace(/\s+/g, "-")}`;
+      const userFieldElement = document.querySelector(`.${className}`);
+      if (userFieldElement) {
+        userFieldElement.style.display = shouldShow ? "block" : "none";
       }
     });
   }
