@@ -2,6 +2,33 @@ import { click, visit } from "@ember/test-helpers";
 import { test } from "qunit";
 import { acceptance } from "discourse/tests/helpers/qunit-helpers";
 
+const userFields = {
+  user_fields: [
+    {
+      id: 1,
+      name: "test_with_validation",
+      description: "test_with_validation",
+      field_type: "text",
+      editable: true,
+      position: 1,
+      has_custom_validation: true,
+      show_values: [],
+      target_user_field_ids: [],
+    },
+    {
+      id: 2,
+      name: "test_without_validation",
+      description: "test_without_validation",
+      field_type: "text",
+      editable: true,
+      position: 2,
+      has_custom_validation: false,
+      show_values: [],
+      target_user_field_ids: [],
+    },
+  ],
+};
+
 acceptance(
   "Discourse Authentication Validations - Custom User Fields",
   function (needs) {
@@ -9,34 +36,10 @@ acceptance(
     needs.settings({
       discourse_authentication_validations_enabled: true,
     });
+    needs.site(userFields);
     needs.pretender((server, helper) => {
       server.get("/admin/customize/user_fields", () =>
-        helper.response(200, {
-          user_fields: [
-            {
-              id: 1,
-              name: "test_with_validation",
-              description: "test_with_validation",
-              field_type: "text",
-              editable: true,
-              position: 1,
-              has_custom_validation: true,
-              show_values: [],
-              target_user_field_ids: [],
-            },
-            {
-              id: 2,
-              name: "test_without_validation",
-              description: "test_without_validation",
-              field_type: "text",
-              editable: true,
-              position: 2,
-              has_custom_validation: false,
-              show_values: [],
-              target_user_field_ids: [],
-            },
-          ],
-        })
+        helper.response(200, userFields)
       );
     });
 
