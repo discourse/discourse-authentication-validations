@@ -96,9 +96,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field", type: 
   context "when changing the value of user field with a custom validation" do
     context "when user field is included in target_user_field_ids" do
       let(:target_class) { build_user_field_css_target(user_field_with_validation_1) }
-      let(:parent_of_target_class) do
-        build_user_field_css_target(user_field_with_validation_2)
-      end
+      let(:parent_of_target_class) { build_user_field_css_target(user_field_with_validation_2) }
 
       context "when show_values are set on parent user field of target" do
         context "when the input matches a show_values value" do

@@ -58,7 +58,7 @@ export default class CustomUserFields extends Component {
       >
         <MultiSelect
           @content={{this.userFieldsMinusCurrent}}
-          @valueProperty={{"id"}}
+          @valueProperty="id"
           @value={{@outletArgs.buffered.target_user_field_ids}}
         />
         <br />
