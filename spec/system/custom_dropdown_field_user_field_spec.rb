@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdown Field", type: :system, js: true do
+RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdown Field",
+               type: :system,
+               js: true do
   SHOW_VALIDATION_VALUE = "show_validation"
   NOT_A_SHOW_VALIDATION_VALUE = "not a show_values value"
 
@@ -16,9 +18,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       has_custom_validation: false,
       show_values: [],
       target_user_field_ids: [],
-    ) do
-      user_field_options {[Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)]} 
-    end
+    ) { user_field_options { [Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)] } }
   end
 
   fab!(:user_field_without_validation_2) do
@@ -31,9 +31,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       has_custom_validation: false,
       show_values: [],
       target_user_field_ids: [],
-    ) do
-      user_field_options {[Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)]} 
-    end
+    ) { user_field_options { [Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)] } }
   end
 
   fab!(:user_field_with_validation_1) do
@@ -46,9 +44,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       has_custom_validation: true,
       show_values: [],
       target_user_field_ids: [],
-    ) do
-      user_field_options {[Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)]} 
-    end
+    ) { user_field_options { [Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)] } }
   end
 
   fab!(:user_field_with_validation_2) do
@@ -81,9 +77,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       has_custom_validation: true,
       show_values: ["null"],
       target_user_field_ids: [user_field_without_validation_2.id],
-    ) do
-      user_field_options {[Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)]}
-    end
+    ) { user_field_options { [Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)] } }
   end
 
   def build_user_field_css_target(user_field)
@@ -160,27 +154,23 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
 
       it "toggles the display of the target after the value has changed" do
         visit("/signup")
-        select_kit =
-          PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
+        select_kit = PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
         select_kit.expand
         select_kit.select_row_by_value(NOT_A_SHOW_VALIDATION_VALUE)
 
         expect(page).not_to have_css(target_class)
       end
-    end  
+    end
 
     context "when show_values are not set on parent user field of target" do
       let(:target_class) { build_user_field_css_target(user_field_with_validation_1) }
       let(:parent_of_target_class) { build_user_field_css_target(user_field_with_validation_2) }
 
-      before do
-        user_field_with_validation_2.show_values = []
-      end
+      before { user_field_with_validation_2.show_values = [] }
 
       it "hides the target user field" do
         visit("/signup")
-        select_kit =
-          PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
+        select_kit = PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
         select_kit.expand
         select_kit.select_row_by_value(NOT_A_SHOW_VALIDATION_VALUE)
 
