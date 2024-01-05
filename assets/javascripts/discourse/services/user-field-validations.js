@@ -24,7 +24,10 @@ export default class UserFieldValidations extends Service {
 
   @action
   crossCheckValidations(userField, value) {
-    const shouldShow = userField.show_values?.includes?.(value);
+    let shouldShow = userField.show_values.includes(value);
+    if (value === null && userField.show_values.includes("null")) {
+      shouldShow = true;
+    }
     this._updateTargets(userField.target_user_field_ids, shouldShow);
   }
 
