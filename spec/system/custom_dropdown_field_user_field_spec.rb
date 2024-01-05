@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdown Field", type: :system, js: true do
-  SHOW_VALIDATION_VALUE_1 = "show_validation"
-  SHOW_VALIDATION_VALUE_2 = "show_validation_2"
+  SHOW_VALIDATION_VALUE = "show_validation"
   NOT_A_SHOW_VALIDATION_VALUE = "not a show_values value"
 
   before { SiteSetting.discourse_authentication_validations_enabled = true }
@@ -60,13 +59,13 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       editable: true,
       required: false,
       has_custom_validation: true,
-      show_values: [SHOW_VALIDATION_VALUE_1, SHOW_VALIDATION_VALUE_2],
+      show_values: [SHOW_VALIDATION_VALUE],
       target_user_field_ids: [user_field_with_validation_1.id],
     ) do
       user_field_options do
         [
           Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE),
-          Fabricate(:user_field_option, value: SHOW_VALIDATION_VALUE_1),
+          Fabricate(:user_field_option, value: SHOW_VALIDATION_VALUE),
         ]
       end
     end
@@ -80,7 +79,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       editable: true,
       required: false,
       has_custom_validation: true,
-      show_values: [],
+      show_values: ["null"],
       target_user_field_ids: [user_field_without_validation_2.id],
     ) do
       user_field_options {[Fabricate(:user_field_option, value: NOT_A_SHOW_VALIDATION_VALUE)]}
@@ -131,7 +130,7 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
           select_kit =
             PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
           select_kit.expand
-          select_kit.select_row_by_value(SHOW_VALIDATION_VALUE_1)
+          select_kit.select_row_by_value(SHOW_VALIDATION_VALUE)
 
           expect(page).to have_css(target_class)
         end
@@ -150,9 +149,33 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
       end
     end
 
-    context "when show_values are not set on parent user field of target" do
+    context "when show_values includes `null` on the parent user field of target" do
       let(:target_class) { build_user_field_css_target(user_field_without_validation_2) }
       let(:parent_of_target_class) { build_user_field_css_target(user_field_with_validation_3) }
+
+      it "shows the target user field" do
+        visit("/signup")
+        expect(page).to have_css(target_class)
+      end
+
+      it "toggles the display of the target after the value has changed" do
+        visit("/signup")
+        select_kit =
+          PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
+        select_kit.expand
+        select_kit.select_row_by_value(NOT_A_SHOW_VALIDATION_VALUE)
+
+        expect(page).not_to have_css(target_class)
+      end
+    end  
+
+    context "when show_values are not set on parent user field of target" do
+      let(:target_class) { build_user_field_css_target(user_field_with_validation_1) }
+      let(:parent_of_target_class) { build_user_field_css_target(user_field_with_validation_2) }
+
+      before do
+        user_field_with_validation_2.show_values = []
+      end
 
       it "hides the target user field" do
         visit("/signup")
