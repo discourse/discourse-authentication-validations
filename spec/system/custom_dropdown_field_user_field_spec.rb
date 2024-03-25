@@ -174,6 +174,8 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
         select_kit.expand
         select_kit.select_row_by_value(NOT_A_SHOW_VALIDATION_VALUE)
 
+        puts user_field_with_validation_2.show_values.inspect
+
         expect(page).not_to have_css(target_class)
       end
     end
