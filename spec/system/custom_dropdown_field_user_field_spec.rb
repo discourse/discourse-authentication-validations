@@ -3,8 +3,8 @@
 RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdown Field",
                type: :system,
                js: true do
-  SHOW_VALIDATION_VALUE = "show_validation"
-  NOT_A_SHOW_VALIDATION_VALUE = "not a show_values value"
+  SHOW_VALIDATION_VALUE ||= "show_validation"
+  NOT_A_SHOW_VALIDATION_VALUE ||= "not a show_values value"
 
   before { SiteSetting.discourse_authentication_validations_enabled = true }
 
@@ -173,6 +173,8 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdo
         select_kit = PageObjects::Components::SelectKit.new("#{parent_of_target_class} .select-kit")
         select_kit.expand
         select_kit.select_row_by_value(NOT_A_SHOW_VALIDATION_VALUE)
+
+        puts user_field_with_validation_2.show_values.inspect
 
         expect(page).not_to have_css(target_class)
       end
