@@ -3,8 +3,8 @@
 RSpec.describe "Discourse Authentication Validation - Custom User Field - Dropdown Field",
                type: :system,
                js: true do
-  SHOW_VALIDATION_VALUE = "show_validation"
-  NOT_A_SHOW_VALIDATION_VALUE = "not a show_values value"
+  SHOW_VALIDATION_VALUE ||= "show_validation"
+  NOT_A_SHOW_VALIDATION_VALUE ||= "not a show_values value"
 
   before { SiteSetting.discourse_authentication_validations_enabled = true }
 

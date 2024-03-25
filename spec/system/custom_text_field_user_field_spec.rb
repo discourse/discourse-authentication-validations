@@ -3,7 +3,7 @@
 RSpec.describe "Discourse Authentication Validation - Custom User Field - Text Field",
                type: :system,
                js: true do
-  SHOW_VALIDATION_VALUE = "show_validation"
+  SHOW_VALIDATION_VALUE ||= "show_validation"
 
   before { SiteSetting.discourse_authentication_validations_enabled = true }
 
