@@ -2,7 +2,7 @@
 
 # name: discourse-authentication-validations
 # about: Add custom validations to a User Field to toggle the display of User Fields based on the Signup Modal. This allows you to "chain" User Fields together, so that a User Field is only displayed if a previous User Field has a specific value.
-# meta_topic_id: TODO
+# meta_topic_id: 292547
 # version: 0.0.1
 # authors: Discourse
 # url: TODO
