@@ -1,7 +1,10 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { Input } from "@ember/component";
+import { fn } from "@ember/helper";
+import { on } from "@ember/modifier";
 import { inject as service } from "@ember/service";
+import withEventValue from "discourse/helpers/with-event-value";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import i18n from "discourse-common/helpers/i18n";
 import AdminFormRow from "admin/components/admin-form-row";
@@ -43,8 +46,15 @@ export default class CustomUserFields extends Component {
       <AdminFormRow
         @label="discourse_authentication_validations.value_validation_regex.label"
       >
-        <Input
-          @value={{@outletArgs.buffered.value_validation_regex}}
+        <input
+          {{on
+            "input"
+            (withEventValue
+              (fn (mut @outletArgs.buffered.value_validation_regex))
+            )
+          }}
+          value={{@outletArgs.buffered.value_validation_regex}}
+          type="text"
           class="value-validation-regex-input"
         />
         <br />
