@@ -30,7 +30,7 @@ const userFields = {
 };
 
 acceptance(
-  "Discourse Authentication Validations - Custom User Fields",
+  "Discourse Authentication Validations - Admin Page - Custom User Fields",
   function (needs) {
     needs.user();
     needs.settings({
