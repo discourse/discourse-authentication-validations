@@ -1,13 +1,12 @@
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { next } from "@ember/runloop";
-import Service, { inject as service } from "@ember/service";
+import Service, { service } from "@ember/service";
 
 export default class UserFieldValidations extends Service {
   @service site;
 
   @tracked totalCustomValidationFields = 0;
-  @tracked userFields;
   currentCustomValidationFieldCount = 0;
 
   @action
@@ -18,17 +17,39 @@ export default class UserFieldValidations extends Service {
       this.currentCustomValidationFieldCount ===
       this.totalCustomValidationFields
     ) {
-      next(() => this.crossCheckValidations(userField, value));
+      next(() => {
+        this.crossCheckValidations(userField, value);
+        this.hideNestedCustomValidations(userField, value);
+      });
+    }
+  }
+
+  @action
+  hideNestedCustomValidations(userField, value) {
+    if (!this._shouldShow(userField, value)) {
+      const nestedUserFields = this.site.user_fields
+        .filter((field) => userField.target_user_field_ids.includes(field.id))
+        .flatMap((nestedField) =>
+          this.site.user_fields.filter((field) =>
+            nestedField.target_user_field_ids.includes(field.id)
+          )
+        );
+
+      // Clear and hide nested fields
+      nestedUserFields.forEach((field) => this._clearUserField(field));
+      this._updateTargets(
+        nestedUserFields.map((field) => field.id),
+        false
+      );
     }
   }
 
   @action
   crossCheckValidations(userField, value) {
-    let shouldShow = userField.show_values.includes(value);
-    if (value === null && userField.show_values.includes("null")) {
-      shouldShow = true;
-    }
-    this._updateTargets(userField.target_user_field_ids, shouldShow);
+    this._updateTargets(
+      userField.target_user_field_ids,
+      this._shouldShow(userField, value)
+    );
   }
 
   _updateTargets(userFieldIds, shouldShow) {
@@ -38,10 +59,36 @@ export default class UserFieldValidations extends Service {
         .toLowerCase()
         .replace(/\s+/g, "-")}`;
       const userFieldElement = document.querySelector(`.${className}`);
-      if (userFieldElement) {
-        userFieldElement.style.display = shouldShow ? "" : "none";
+      if (userFieldElement && !shouldShow) {
+        // Clear and hide nested fields
+        userFieldElement.style.display = "none";
+        this._clearUserField(userField);
+      } else {
+        userFieldElement.style.display = "";
       }
     });
+  }
+
+  _shouldShow(userField, value) {
+    let shouldShow = userField.show_values.includes(value);
+    if (value === null && userField.show_values.includes("null")) {
+      shouldShow = true;
+    }
+    return shouldShow;
+  }
+
+  _clearUserField(userField) {
+    switch (userField.field_type) {
+      case "confirm":
+        userField.element.checked = false;
+        break;
+      case "dropdown":
+        userField.element.selectedIndex = 0;
+        break;
+      default:
+        userField.element.value = "";
+        break;
+    }
   }
 
   _bumpTotalCustomValidationFields() {
