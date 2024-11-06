@@ -70,7 +70,8 @@ export default class UserFieldValidations extends Service {
   }
 
   _shouldShow(userField, value) {
-    let shouldShow = userField.show_values.includes(value);
+    let stringValue = value?.toString(); // Account for checkbox boolean values and `null`
+    let shouldShow = userField.show_values.includes(stringValue);
     if (value === null && userField.show_values.includes("null")) {
       shouldShow = true;
     }

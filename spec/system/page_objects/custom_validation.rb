@@ -15,6 +15,10 @@ module PageObjects
         select_kit.select_row_by_value(self.show_value_validation_value)
       end
 
+      def click_confirmation(selector)
+        find("#{selector}.confirm input").click
+      end
+
       def build_user_field_css_target(user_field)
         ".user-field-#{user_field.name}"
       end
