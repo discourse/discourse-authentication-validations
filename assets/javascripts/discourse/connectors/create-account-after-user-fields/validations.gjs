@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { hash } from "@ember/helper";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import setupUserFieldValidation from "../../helpers/setup-user-field-validation";
 
 export default class Validations extends Component {
