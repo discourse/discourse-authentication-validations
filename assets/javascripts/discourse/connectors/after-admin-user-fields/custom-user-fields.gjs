@@ -3,7 +3,7 @@ import { tracked } from "@glimmer/tracking";
 import { Input } from "@ember/component";
 import { service } from "@ember/service";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import i18n from "discourse-common/helpers/i18n";
+import { i18n } from "discourse-i18n";
 import AdminFormRow from "admin/components/admin-form-row";
 import ValueList from "admin/components/value-list";
 import MultiSelect from "select-kit/components/multi-select";

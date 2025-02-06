@@ -1,6 +1,6 @@
 import EmberObject from "@ember/object";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import I18n from "discourse-i18n";
+import { i18n } from "discourse-i18n";
 
 export default {
   name: "user-field-validation",
@@ -19,7 +19,7 @@ export default {
           ) {
             return EmberObject.create({
               failed: true,
-              reason: I18n.t(
+              reason: i18n(
                 "discourse_authentication_validations.value_validation_error_message",
                 {
                   user_field_name: userField.field.name,
