@@ -22,13 +22,13 @@ RSpec.describe "Discourse Authentication Validations - Admin Page - Custom User 
   end
 
   it "shows `has_custom_validation` checkbox" do
-    visit "/admin/customize/user_fields"
+    visit "/admin/config/user-fields"
     find(".admin-user_field-item__edit").click
     expect(page).to have_selector(".has-custom-validation-checkbox")
   end
 
   it "hides additional custom validation fields until `has_custom_validation` checkbox is active" do
-    visit "/admin/customize/user_fields"
+    visit "/admin/config/user-fields"
     find(".admin-user_field-item__edit").click
 
     expect(find(".has-custom-validation-checkbox")).not_to be_checked
