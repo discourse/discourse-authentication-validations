@@ -2,7 +2,7 @@
 
 RSpec.describe "Discourse Authentication Validation - Value Validation Regex - User Field",
                type: :system do
-  let(:signup_modal) { PageObjects::Modals::Signup.new }
+  let(:signup_page) { PageObjects::Pages::Signup.new }
   fab!(:user_field_with_value_validation_regex) do
     Fabricate(
       :user_field,
@@ -35,11 +35,11 @@ RSpec.describe "Discourse Authentication Validation - Value Validation Regex - U
 
   context "when a user field has a value_validation_regex" do
     it "displays a validation error message when the target user field input is incorrect" do
-      signup_modal.open
-      signup_modal.fill_custom_field("phone-number", "not a phone number")
-      signup_modal.click_create_account
+      signup_page.open
+      signup_page.fill_custom_field("phone-number", "NAN")
+      signup_page.click_create_account
 
-      expect(signup_modal).to have_text(
+      expect(signup_page).to have_text(
         I18n.t(
           "js.discourse_authentication_validations.value_validation_error_message",
           { user_field_name: user_field_with_value_validation_regex.name },
@@ -48,29 +48,29 @@ RSpec.describe "Discourse Authentication Validation - Value Validation Regex - U
     end
 
     it "displays the default error message for no value" do
-      signup_modal.open
-      signup_modal.click_create_account
+      signup_page.open
+      signup_page.click_create_account
 
-      expect(signup_modal).not_to have_text(
+      expect(signup_page).not_to have_text(
         I18n.t(
           "js.discourse_authentication_validations.value_validation_error_message",
           { user_field_name: user_field_with_value_validation_regex.name },
         ),
       )
-      expect(signup_modal).to have_text(
+      expect(signup_page).to have_text(
         I18n.t("js.user_fields.required", { name: user_field_with_value_validation_regex.name }),
       )
     end
 
     it "clears the validation error message when the target user field input is correct" do
-      signup_modal.open
-      signup_modal.fill_custom_field("phone-number", "not a phone number")
-      signup_modal.click_create_account
+      signup_page.open
+      signup_page.fill_custom_field("phone-number", "not a phone number")
+      signup_page.click_create_account
 
-      signup_modal.fill_custom_field("phone-number", "11 2222 3333")
-      signup_modal.click_create_account
+      signup_page.fill_custom_field("phone-number", "11 2222 3333")
+      signup_page.click_create_account
 
-      expect(signup_modal).not_to have_text(
+      expect(signup_page).not_to have_text(
         I18n.t(
           "js.discourse_authentication_validations.value_validation_error_message",
           { user_field_name: user_field_with_value_validation_regex.name },
@@ -81,11 +81,11 @@ RSpec.describe "Discourse Authentication Validation - Value Validation Regex - U
 
   context "when a user field does not have a value_validation_regex" do
     it "does not display a validation error message" do
-      signup_modal.open
-      signup_modal.fill_custom_field("unvalidated-phone-number", "not a phone number")
-      signup_modal.click_create_account
+      signup_page.open
+      signup_page.fill_custom_field("unvalidated-phone-number", "not a phone number")
+      signup_page.click_create_account
 
-      expect(signup_modal).not_to have_text(
+      expect(signup_page).not_to have_text(
         I18n.t(
           "js.discourse_authentication_validations.value_validation_error_message",
           { user_field_name: user_field_without_value_validation_regex.name },
@@ -97,11 +97,11 @@ RSpec.describe "Discourse Authentication Validation - Value Validation Regex - U
   context "when a user field has a value_validation_regex and has_custom_validation is false" do
     it "does not display a validation error message" do
       user_field_with_value_validation_regex.update!(has_custom_validation: false)
-      signup_modal.open
-      signup_modal.fill_custom_field("phone-number", "not a phone number")
-      signup_modal.click_create_account
+      signup_page.open
+      signup_page.fill_custom_field("phone-number", "not a phone number")
+      signup_page.click_create_account
 
-      expect(signup_modal).not_to have_text(
+      expect(signup_page).not_to have_text(
         I18n.t(
           "js.discourse_authentication_validations.value_validation_error_message",
           { user_field_name: user_field_with_value_validation_regex.name },
