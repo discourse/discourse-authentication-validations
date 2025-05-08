@@ -140,12 +140,15 @@ RSpec.describe "Discourse Authentication Validation - Custom User Field - Text F
       )
 
       # Update grandparent and parent to show the nested child again
-      page.find(custom_validation_page.target_class(user_field_with_validation_2)).fill_in(
-        with: "show_validation",
-      )
-      page.find(custom_validation_page.target_class(user_field_with_validation_3)).fill_in(
-        with: "show_validation",
-      )
+      page
+        .find(custom_validation_page.target_class(user_field_with_validation_2))
+        .fill_in(with: "")
+        .send_keys("show_validation")
+      page
+        .find(custom_validation_page.target_class(user_field_with_validation_3))
+        .fill_in(with: "")
+        .send_keys("show_validation")
+
       expect(page).to have_css(custom_validation_page.target_class(user_field_without_validation_2))
       # Check that the nested child is cleared
       expect(
