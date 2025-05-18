@@ -16,7 +16,7 @@ module PageObjects
       end
 
       def click_confirmation(selector)
-        find("#{selector}.confirm input").click
+        find("#{selector}.confirm span").click
       end
 
       def build_user_field_css_target(user_field)
