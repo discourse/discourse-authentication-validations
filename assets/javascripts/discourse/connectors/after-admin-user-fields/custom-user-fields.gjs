@@ -17,7 +17,7 @@ export default class CustomUserFields extends Component {
 
   constructor() {
     super(...arguments);
-    withPluginApi("1.21.0", (api) => {
+    withPluginApi((api) => {
       [
         "has_custom_validation",
         "show_values",

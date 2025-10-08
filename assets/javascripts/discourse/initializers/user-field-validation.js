@@ -5,7 +5,7 @@ import { i18n } from "discourse-i18n";
 export default {
   name: "user-field-validation",
   initialize() {
-    withPluginApi("1.33.0", (api) => {
+    withPluginApi((api) => {
       api.addCustomUserFieldValidationCallback((userField) => {
         if (
           userField.field.has_custom_validation &&
