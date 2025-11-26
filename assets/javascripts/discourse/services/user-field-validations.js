@@ -163,9 +163,11 @@ export default class UserFieldValidations extends Service {
   _updateTargets(userFieldIds, shouldShow) {
     userFieldIds.forEach((id) => {
       const userField = this.site.user_fields.find((field) => field.id === id);
-      const className = `user-field-${userField.name
-        .toLowerCase()
-        .replace(/\s+/g, "-")}`;
+      // Use the same slugification logic as Discourse core `UserFieldBase.customFieldClass`:
+      const className = `user-field-${String(userField.name)
+        .replace(/\s+/g, "-")
+        .replace(/[!\"#$%&'()\*\+,\.\/:;<=>\?@\[\\\]\^`\{\|\}~]/g, "")
+        .toLowerCase()}`;
       const userFieldElement = document.querySelector(`.${className}`);
 
       // Save original required value on first call
