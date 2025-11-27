@@ -1,6 +1,6 @@
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
-import { next } from "@ember/runloop";
+import { next, scheduleOnce } from "@ember/runloop";
 import Service, { service } from "@ember/service";
 
 export default class UserFieldValidations extends Service {
@@ -20,6 +20,9 @@ export default class UserFieldValidations extends Service {
       if (field.has_custom_validation && field.originally_required === undefined) {
         field.originally_required = field.required;
       }
+
+    scheduleOnce("afterRender", this, () => {
+      this._syncRequiredClass(field)});
     });
   }
 
@@ -163,11 +166,7 @@ export default class UserFieldValidations extends Service {
   _updateTargets(userFieldIds, shouldShow) {
     userFieldIds.forEach((id) => {
       const userField = this.site.user_fields.find((field) => field.id === id);
-      // Use the same slugification logic as Discourse core `UserFieldBase.customFieldClass`:
-      const className = `user-field-${String(userField.name)
-        .replace(/\s+/g, "-")
-        .replace(/[!\"#$%&'()\*\+,\.\/:;<=>\?@\[\\\]\^`\{\|\}~]/g, "")
-        .toLowerCase()}`;
+      const className = this._userFieldClassName(userField);
       const userFieldElement = document.querySelector(`.${className}`);
 
       // Save original required value on first call
@@ -189,6 +188,14 @@ export default class UserFieldValidations extends Service {
         if (userField.originally_required !== undefined) {
           userField.required = userField.originally_required;
         }
+      }
+
+      // Sync visual 'required' class to DOM for this field. Pass the
+      // already-found `userFieldElement` to avoid querying the DOM twice.
+      try {
+        this._syncRequiredClass(userField, userFieldElement);
+      } catch (e) {
+        // ignore errors
       }
     });
   }
@@ -246,14 +253,65 @@ export default class UserFieldValidations extends Service {
   _clearUserField(userField) {
     switch (userField.field_type) {
       case "confirm":
-        userField.element.checked = false;
+        if (userField.element) {
+          userField.element.checked = false;
+        }
         break;
       case "dropdown":
-        userField.element.selectedIndex = 0;
+        if (userField.element) {
+          userField.element.selectedIndex = 0;
+        }
         break;
+      case "multiselect": {
+        // There is nothing we can do here
+        // There no element to foucs on
+        // The selected values hidden from DOM while select is closed
+        break;
+      }
       default:
-        userField.element.value = "";
+        if (userField.element) {
+          userField.element.value = "";
+        }
         break;
+    }
+  }
+
+  _userFieldClassName(userField) {
+    const name = String((userField && userField.name) || "");
+    return `user-field-${name
+      .replace(/\s+/g, "-")
+      .replace(/[!"#$%&'()\*\+,\.\/:;<=>\?@\[\\\]\^`\{\|\}~]/g, "")
+      .toLowerCase()}`;
+  }
+
+  // Ensure the DOM reflects the `required` state for a given userField by
+  // finding its wrapper and toggling the `required` CSS class.
+  _syncRequiredClass(userField, el) {
+    if (!userField) {
+      return;
+    }
+
+    let element = el;
+    if (!element) {
+      const className = this._userFieldClassName(userField);
+      element = document.querySelector && document.querySelector(`.${className}`);
+    }
+
+    if (!element) {
+      return;
+    }
+
+    try {
+      // Only operate if this element is the standard `.user-field` wrapper
+      if (element.classList && element.classList.contains("user-field")) {
+        if (userField.required) {
+          element.classList.add("required");
+        } else {
+          element.classList.remove("required");
+        }
+      }
+    } catch (e) {
+      // ignore DOM errors
     }
   }
 
