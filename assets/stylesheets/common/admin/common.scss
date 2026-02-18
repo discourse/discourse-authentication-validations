@@ -2,3 +2,20 @@
 .target-user-field-ids-input {
   margin: 0.4em 0;
 }
+
+#control-conditional_fields .form-kit__container-content.--large {
+  width: 100%;
+}
+
+.conditional-rules .conditional-rule {
+  border: 1px solid #eee;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.conditional-rules .conditional-rule .item-row {
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  width: 100%;
+}
