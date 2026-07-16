@@ -1,5 +1,6 @@
 import Component from "@glimmer/component";
 import { hash } from "@ember/helper";
+import { get } from "@ember/object";
 import { service } from "@ember/service";
 import setupUserFieldValidation from "../../helpers/setup-user-field-validation";
 
@@ -10,8 +11,8 @@ export default class Validations extends Component {
     super(...arguments);
 
     this.userFieldValidations.totalCustomValidationFields =
-      this.args.outletArgs.userFields.filterBy(
-        "field.hasCustomValidation"
+      this.args.outletArgs.userFields.filter((userField) =>
+        get(userField, "field.hasCustomValidation")
       ).length;
   }
 
