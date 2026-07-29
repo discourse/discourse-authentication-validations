@@ -9,8 +9,27 @@ export default class UserFieldValidations extends Service {
   @tracked totalCustomValidationFields = 0;
   currentCustomValidationFieldCount = 0;
 
+  constructor() {
+    super(...arguments);
+
+    this._initializeOriginallyRequired();
+  }
+
+  _initializeOriginallyRequired() {
+    this.site?.user_fields?.forEach((field) => {
+      if (field.has_custom_validation && field.originally_required === undefined) {
+        field.originally_required = field.required;
+      }
+    });
+  }
+
   @action
   setValidation(userField, value) {
+    // Initialize originally_required for userField if not done yet
+    if (userField.originally_required === undefined) {
+      userField.originally_required = userField.required;
+    }
+
     this._bumpTotalCustomValidationFields();
 
     if (
@@ -59,12 +78,26 @@ export default class UserFieldValidations extends Service {
         .toLowerCase()
         .replace(/\s+/g, "-")}`;
       const userFieldElement = document.querySelector(`.${className}`);
+
+      // Save original required value on first call
+      if (userField.originally_required === undefined) {
+        userField.originally_required = userField.required;
+      }
+
       if (userFieldElement && !shouldShow) {
         // Clear and hide nested fields
         userFieldElement.style.display = "none";
         this._clearUserField(userField);
+
+        // Remove required for hidden field
+        userField.required = false;
       } else {
         userFieldElement.style.display = "";
+
+        //Restore original required for visible field
+        if (userField.originally_required !== undefined) {
+          userField.required = userField.originally_required;
+        }
       }
     });
   }
